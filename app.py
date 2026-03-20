@@ -11,9 +11,9 @@ import os
 
 # --- PAGE CONFIG ---
 st.set_page_config(
-      page_title="Review Sentiment Pro",
-      page_icon="*",
-      layout="centered"
+          page_title="Review Sentiment Pro",
+          page_icon="*",
+          layout="centered"
 )
 
 # --- CUSTOM CSS ---
@@ -66,7 +66,7 @@ st.markdown("""
 # --- APP SETUP ---
 @st.cache_resource
 def load_data_and_model():
-      dataset = pd.read_csv('Restaurant_Reviews.tsv', delimiter='\t', quoting=3)
+          dataset = pd.read_csv('Restaurant_Reviews.tsv', delimiter='\t', quoting=3)
 
     nltk.download('stopwords')
     ps = PorterStemmer()
@@ -75,12 +75,12 @@ def load_data_and_model():
 
     corpus = []
     for i in range(0, 1000):
-              review = re.sub('[^a-zA-Z]', ' ', dataset['Review'][i])
-              review = review.lower()
-              review = review.split()
-              review = [ps.stem(word) for word in review if not word in set(all_stopwords)]
-              review = ' '.join(review)
-              corpus.append(review)
+                  review = re.sub('[^a-zA-Z]', ' ', dataset['Review'][i])
+                  review = review.lower()
+                  review = review.split()
+                  review = [ps.stem(word) for word in review if not word in set(all_stopwords)]
+                  review = ' '.join(review)
+                  corpus.append(review)
 
     cv = CountVectorizer(max_features=1500)
     X = cv.fit_transform(corpus).toarray()
@@ -101,29 +101,29 @@ st.markdown("Enter a restaurant review below and our AI will predict if it's **P
 user_review = st.text_input("Review text", placeholder="e.g., The food was absolutely delicious and the service was amazing!")
 
 if st.button("Analyze Sentiment"):
-      if user_review.strip() == "":
-                st.warning("Please enter a review first.")
+          if user_review.strip() == "":
+                        st.warning("Please enter a review first.")
 else:
-          # Preprocessing user input
-          new_review = re.sub('[^a-zA-Z]', ' ', user_review)
-          new_review = new_review.lower()
-          new_review = new_review.split()
-          new_review = [ps.stem(word) for word in new_review if not word in set(all_stopwords)]
-          new_review = ' '.join(new_review)
+              # Preprocessing user input
+              new_review = re.sub('[^a-zA-Z]', ' ', user_review)
+              new_review = new_review.lower()
+              new_review = new_review.split()
+              new_review = [ps.stem(word) for word in new_review if not word in set(all_stopwords)]
+              new_review = ' '.join(new_review)
 
         # Prediction
-          new_X_test = cv.transform([new_review]).toarray()
+              new_X_test = cv.transform([new_review]).toarray()
         prediction = classifier.predict(new_X_test)
 
         # Display Result
         st.markdown('<div class="prediction-card">', unsafe_allow_html=True)
         if prediction[0] == 1:
-                      st.markdown('Predicted Sentiment: <span class="positive">POSITIVE</span>', unsafe_allow_html=True)
-                      st.success("Glad you enjoyed it!")
+                          st.markdown('Predicted Sentiment: <span class="positive">POSITIVE</span>', unsafe_allow_html=True)
+                          st.success("Glad you enjoyed it!")
 else:
-              st.markdown('Predicted Sentiment: <span class="negative">NEGATIVE</span>', unsafe_allow_html=True)
-              st.error("Sorry to hear about the bad experience.")
-          st.markdown('</div>', unsafe_allow_html=True)
+                  st.markdown('Predicted Sentiment: <span class="negative">NEGATIVE</span>', unsafe_allow_html=True)
+                  st.error("Sorry to hear about the bad experience.")
+              st.markdown('</div>', unsafe_allow_html=True)
 
 # --- FOOTER ---
 st.divider()
